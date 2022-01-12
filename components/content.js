@@ -7,33 +7,38 @@ import {
   Input,
   FormControl,
   Button,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import Task from "./task";
-import { randomId } from '../lib/generator'
+import { randomId } from "../lib/generator";
+import { AnimatePresence } from "framer-motion";
+import { Visible } from "./animations/visible";
 
 function Content() {
-  const [task, setTask] = useState('');  
+  const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
 
   const handleTaskChange = (e) => setTask(e.target.value);
-  
+
   const handleNewTask = (event, task) => {
     event.preventDefault();
     const newTask = {
       title: task,
-      id: randomId(9999999)
+      id: randomId(9999999),
+    };
+
+    if (newTask.title !== " ") {
+      setTasks([...tasks, newTask]);
     }
-    setTasks([...tasks, newTask]);
     setTask("");
   };
-  
+
   const handleDeleteTask = (id) => {
-    const newTasks = tasks.filter((item) => item.id !== id ?? item) 
-    
+    const newTasks = tasks.filter((item) => item.id !== id);
+
     setTasks(newTasks);
-  }
+  };
   return (
     <Stack w="100%" h="100%" align="center" justify="center">
       <Flex
@@ -43,6 +48,7 @@ function Content() {
         align="flexStart"
         justify="flexStart"
         py={8}
+        overflowY="scroll"
       >
         <Heading as="h3">Início</Heading>
 
@@ -65,6 +71,7 @@ function Content() {
                 variant="filled"
                 placeholder="Escreva uma nova tarefa..."
                 fontSize="14"
+                w="100%"
                 _hover={{
                   bgColor: "gray.300",
                 }}
@@ -72,32 +79,41 @@ function Content() {
               />
             </FormControl>
             {task && (
-              <Button
-                type="submit"
-                mt="6"
-                colorScheme="twitter"
-                size="sm"
-                alignSelf="flexStart"
-              >
-                Done
-              </Button>
+              <>
+              <Visible>
+                <Button
+                  type="submit"
+                  colorScheme="twitter"
+                  size="sm"
+                  alignSelf="flexStart"
+                >
+                  Done
+                </Button>
+              </Visible>
+              </>
             )}
           </HStack>
-          {tasks == '' ? (
+          {tasks == "" ? (
             <>
-              <Text as="strong" color="gray.400">Nenhuma tarefa registrada</Text>
+              <Visible>
+                <Text as="strong" color="gray.400">
+                  Nenhuma tarefa registrada
+                </Text>
+              </Visible>
             </>
           ) : (
             <>
-              {tasks.map((item) => {
-                return (
-                  <Task
-                    key={item.id}
-                    title={item.title}
-                    handleDeleteTask={() => handleDeleteTask(item.id)}
-                  />
-                );
-              })}
+              <AnimatePresence>
+                {tasks.map((item) => {
+                  return (
+                    <Task
+                      key={item.id}
+                      title={item.title}
+                      handleDeleteTask={() => handleDeleteTask(item.id)}
+                    />
+                  );
+                })}
+              </AnimatePresence>
             </>
           )}
         </VStack>
