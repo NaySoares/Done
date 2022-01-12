@@ -1,92 +1,109 @@
 import {
   Flex,
-  Box,
   Heading,
-  Text,
-  Button,
-  HStack,
   VStack,
+  HStack,
   Stack,
-  Checkbox,
   Input,
   FormControl,
+  Button,
+  Text
 } from "@chakra-ui/react";
+import React, { useState } from "react";
+import Task from "./task";
+import { randomId } from '../lib/generator'
 
-const Content = () => (
-  <Stack w="100%" h="100%" align="center" justify="center">
-    <Flex
-      direction="column"
-      w="80%"
-      h="100%"
-      align="flexStart"
-      justify="flexStart"
-      py={8}
-    >
-      <Heading as="h3">Início</Heading>
+function Content() {
+  const [task, setTask] = useState('');  
+  const [tasks, setTasks] = useState([]);
 
-      <VStack>
-        <Stack my={9} w="450px">
-          <FormControl>
-            <Input
-              name="name"
-              id="task"
-              focusBorderColor="twitter.500"
-              bgColor="gray.300"
-              variant="filled"
-              placeholder="Escreva uma nova tarefa..."
-              fontSize="14"
-              _hover={{
-                bgColor: "gray.300",
-              }}
-              size="lg"
-            />
-          </FormControl>
-        </Stack>
+  const handleTaskChange = (e) => setTask(e.target.value);
+  
+  const handleNewTask = (event, task) => {
+    event.preventDefault();
+    const newTask = {
+      title: task,
+      id: randomId(9999999)
+    }
+    setTasks([...tasks, newTask]);
+    setTask("");
+  };
+  
+  const handleDeleteTask = (id) => {
+    const newTasks = tasks.filter((item) => item.id !== id ?? item) 
+    
+    setTasks(newTasks);
+  }
+  return (
+    <Stack w="100%" h="100%" align="center" justify="center">
+      <Flex
+        direction="column"
+        w="80%"
+        h="100%"
+        align="flexStart"
+        justify="flexStart"
+        py={8}
+      >
+        <Heading as="h3">Início</Heading>
 
-        <Stack
-          direction="row"
-          bg="whiteAlpha.700"
-          w="450px"
-          h="100%"
-          minHeight="50px"
-          px="20px"
-          align="center"
-          justify="space-between"
-          borderRadius={5}
-          mx={4}
-          _hover={{
-            backgroundColor: "gray.300",
-            transition: "all 0.5s ease",
-          }}
-        >
-          <Checkbox colorScheme="twitter">
-            <Text as="strong">Ir ao mercado</Text>
-          </Checkbox>
-        </Stack>
-
-        <Stack
-          direction="row"
-          bg="whiteAlpha.700"
-          w="450px"
-          h="100%"
-          minHeight="50px"
-          px="20px"
-          align="center"
-          justify="space-between"
-          borderRadius={5}
-          mx={4}
-          _hover={{
-            backgroundColor: "gray.300",
-            transition: "all 0.5s ease",
-          }}
-        >
-          <Checkbox colorScheme="twitter">
-            <Text as="strong">Terminar o arquivo de edição</Text>
-          </Checkbox>
-        </Stack>
-      </VStack>
-    </Flex>
-  </Stack>
-);
+        <VStack>
+          <HStack
+            as="form"
+            my={9}
+            w="450px"
+            onSubmit={() => handleNewTask(event, task)}
+          >
+            <FormControl>
+              <Input
+                name="task"
+                type="text"
+                id="task"
+                value={task}
+                onChange={handleTaskChange}
+                focusBorderColor="twitter.500"
+                bgColor="gray.300"
+                variant="filled"
+                placeholder="Escreva uma nova tarefa..."
+                fontSize="14"
+                _hover={{
+                  bgColor: "gray.300",
+                }}
+                size="lg"
+              />
+            </FormControl>
+            {task && (
+              <Button
+                type="submit"
+                mt="6"
+                colorScheme="twitter"
+                size="sm"
+                alignSelf="flexStart"
+              >
+                OK
+              </Button>
+            )}
+          </HStack>
+          {tasks == '' ? (
+            <>
+              <Text as="strong" color="gray.400">Nenhuma tarefa registrada</Text>
+            </>
+          ) : (
+            <>
+              {tasks.map((item) => {
+                return (
+                  <Task
+                    key={item.id}
+                    title={item.title}
+                    handleDeleteTask={() => handleDeleteTask(item.id)}
+                  />
+                );
+              })}
+            </>
+          )}
+        </VStack>
+      </Flex>
+    </Stack>
+  );
+}
 
 export default Content;
