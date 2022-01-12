@@ -4,8 +4,9 @@ import {
   FormLabel,
   InputProps as InputPropsChakra,
 } from "@chakra-ui/react";
+import { forwardRef  } from "react";
 
-export default function Input({ name, label, ...rest }) {
+const InputBase = ({ name, label, ...rest }, ref) => {
   return (
     <FormControl>
       {!!label && <FormLabel htmlFor={name}>{label}</FormLabel>}
@@ -20,8 +21,11 @@ export default function Input({ name, label, ...rest }) {
           bgColor: "gray.300",
         }}
         size="lg"
+        ref={ref}
         {...rest}
       />
     </FormControl>
   );
 }
+
+export const Input = forwardRef(InputBase)

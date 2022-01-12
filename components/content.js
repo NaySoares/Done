@@ -79,7 +79,7 @@ function Content() {
                 size="sm"
                 alignSelf="flexStart"
               >
-                OK
+                Done
               </Button>
             )}
           </HStack>
