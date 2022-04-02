@@ -5,7 +5,7 @@
  </section>
  
 ## Introdução
- Um simples app TO-DO List com foco em micro animações e simplicidade.
+ A simple to-do list app with a focus on micro animations and simplicity.
 
 ## Stack/libs
 - NextJs
